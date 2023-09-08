@@ -133,7 +133,7 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
     private boolean isError;
     private final long callStartedTimeMs = 0;
     private boolean micEnabled = true;
-    private boolean screencaptureEnabled = false;
+    private boolean screenCaptureEnabled = false;
     private static Intent mediaProjectionPermissionResultData;
     private int mediaProjectionPermissionResultCode;
     private final Context context;
@@ -155,7 +155,7 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
     private ConcurrentLinkedQueue<SurfaceViewRenderer> dynamicRenderers = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<VideoSink>  dynamicRemoteSinks = new ConcurrentLinkedQueue<>();
     private boolean streamStarted = false;
-    private long TRACK_CHECK_PERIDOD_MS = 3000;
+    private long TRACK_CHECK_PERIOD_MS = 3000;
     private boolean waitingForPlay = false;
 
     private int inputSampleRate = 48000;
@@ -221,7 +221,7 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
     private static final int HD_VIDEO_WIDTH = 1280;
     private static final int HD_VIDEO_HEIGHT = 720;
     private static final int BPS_IN_KBPS = 1000;
-    private static final String RTCEVENTLOG_OUTPUT_DIR_NAME = "rtc_event_log";
+    private static final String RTC_EVENT_LOG_OUTPUT_DIR_NAME = "rtc_event_log";
 
     // Executor thread is started once in private ctor and is used for all
     // peer connection API calls to ensure new peer connection factory is
@@ -795,7 +795,7 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
         boolean isForPublish = streamMode.equals(MODE_PUBLISH) ||
                 streamMode.equals(MODE_TRACK_BASED_CONFERENCE);
 
-        return webRTCListener.checkAndRequestPermisssions(isForPublish, permissionCallback);
+        return webRTCListener.checkAndRequestPermissions(isForPublish, permissionCallback);
     }
 
     private void initializeTrackChecker() {
@@ -803,7 +803,7 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
                 && trackCheckerTask == null) {
             trackCheckerTask = new TrackCheckTask();
             trackCheckerTimer = new Timer();
-            trackCheckerTimer.schedule(trackCheckerTask, TRACK_CHECK_PERIDOD_MS, TRACK_CHECK_PERIDOD_MS);
+            trackCheckerTimer.schedule(trackCheckerTask, TRACK_CHECK_PERIOD_MS, TRACK_CHECK_PERIOD_MS);
         }
     }
 
@@ -830,9 +830,9 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
         videoWidth = intent.getIntExtra(CallActivity.EXTRA_VIDEO_WIDTH, 0);
         videoHeight = intent.getIntExtra(CallActivity.EXTRA_VIDEO_HEIGHT, 0);
 
-        screencaptureEnabled = intent.getBooleanExtra(CallActivity.EXTRA_SCREENCAPTURE, false);
+        screenCaptureEnabled = intent.getBooleanExtra(CallActivity.EXTRA_SCREENCAPTURE, false);
         // If capturing format is not specified for screencapture, use screen resolution.
-        if (screencaptureEnabled && videoWidth == 0 && videoHeight == 0) {
+        if (screenCaptureEnabled && videoWidth == 0 && videoHeight == 0) {
             DisplayMetrics displayMetrics = getDisplayMetrics();
             videoWidth = displayMetrics.widthPixels;
             videoHeight = displayMetrics.heightPixels;
@@ -1021,7 +1021,7 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
             if (videoFileAsCamera != null) {
                 source = SOURCE_FILE;
             }
-            else if(screencaptureEnabled) {
+            else if(screenCaptureEnabled) {
                 source = SOURCE_SCREEN;
             }
             else if(customCapturerEnabled) {
@@ -1193,7 +1193,7 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
     public void stopVideoSource() {
         // Don't stop the video when using screencapture to allow user to show other apps to the remote
         // end.
-        if (!screencaptureEnabled) {
+        if (!screenCaptureEnabled) {
             executor.execute(this::stopVideoSourceInternal);
         }
 
@@ -1204,7 +1204,7 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
     @Override
     public void startVideoSource() {
         // Video is not paused for screencapture. See onPause.
-        if (!screencaptureEnabled) {
+        if (!screenCaptureEnabled) {
             executor.execute(this::startVideoSourceInternal);
         }
     }
@@ -1842,7 +1842,7 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
             }
         });
 
-        if(definition.equals("no_stream_exist")) {
+        if(definition.equals(WebSocketConstants.NO_STREAM_EXIST)) {
             waitingForPlay = false;
         }
     }
@@ -2324,7 +2324,7 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_hhmm_ss", Locale.getDefault());
         Date date = new Date();
         final String outputFileName = "event_log_" + dateFormat.format(date) + ".log";
-        return new File(context.getDir(RTCEVENTLOG_OUTPUT_DIR_NAME, Context.MODE_PRIVATE), outputFileName);
+        return new File(context.getDir(RTC_EVENT_LOG_OUTPUT_DIR_NAME, Context.MODE_PRIVATE), outputFileName);
     }
 
     public void maybeCreateAndStartRtcEventLog(String streamId) {

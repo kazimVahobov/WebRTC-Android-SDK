@@ -718,15 +718,15 @@ public class WebRTCClientTest {
 
         webRTCClient.setStreamMode(WebRTCClient.MODE_TRACK_BASED_CONFERENCE);
         webRTCClient.checkPermissions(any());
-        verify(listener).checkAndRequestPermisssions(eq(true), any());
+        verify(listener).checkAndRequestPermissions(eq(true), any());
 
         webRTCClient.setStreamMode(WebRTCClient.MODE_PUBLISH);
         webRTCClient.checkPermissions(any());
-        verify(listener, times(2)).checkAndRequestPermisssions(eq(true), any());
+        verify(listener, times(2)).checkAndRequestPermissions(eq(true), any());
 
         webRTCClient.setStreamMode(WebRTCClient.MODE_PLAY);
         webRTCClient.checkPermissions(any());
-        verify(listener).checkAndRequestPermisssions(eq(false), any());
+        verify(listener).checkAndRequestPermissions(eq(false), any());
 
     }
 

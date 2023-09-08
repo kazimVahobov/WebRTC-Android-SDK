@@ -259,7 +259,7 @@ public abstract class AbstractSampleSDKActivity extends Activity implements IWeb
         makeToast(messageText, Toast.LENGTH_LONG);
     }
     @Override
-    public void onUnmutedFor(String streamId) {
+    public void onUnMutedFor(String streamId) {
         String messageText = "Microphone is unmuted for " + streamId;
         Log.d(AbstractSampleSDKActivity.class.getName(), messageText);
         makeToast(messageText, Toast.LENGTH_LONG);
@@ -280,14 +280,14 @@ public abstract class AbstractSampleSDKActivity extends Activity implements IWeb
     }
 
     @Override
-    public void onSatatusUpdateFor(String streamId, boolean micStatus, boolean cameraStatus) {
+    public void onStatusUpdateFor(String streamId, boolean micStatus, boolean cameraStatus) {
         String messageText = "Status update for " + streamId + " mic: " + micStatus + " camera: " + cameraStatus;
         Log.d(AbstractSampleSDKActivity.class.getName(), messageText);
         makeToast(messageText, Toast.LENGTH_LONG);
     }
 
     @Override
-    public boolean checkAndRequestPermisssions(boolean isForPublish, PermissionCallback permissionCallback) {
+    public boolean checkAndRequestPermissions(boolean isForPublish, PermissionCallback permissionCallback) {
         ArrayList<String> permissions = new ArrayList<>();
         permissions.addAll(Arrays.asList(REQUIRED_MINIMUM_PERMISSIONS));
         if(isForPublish) {

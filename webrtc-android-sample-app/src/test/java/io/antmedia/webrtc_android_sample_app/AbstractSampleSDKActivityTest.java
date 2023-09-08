@@ -47,7 +47,7 @@ public class AbstractSampleSDKActivityTest {
     public void checkAndRequestPermissions_AllPermissionsGranted_ReturnsTrue() {
         when(activity.hasPermissions(any(), anyList())).thenReturn(true);
 
-        boolean result = activity.checkAndRequestPermisssions(true, mockPermissionCallback);
+        boolean result = activity.checkAndRequestPermissions(true, mockPermissionCallback);
 
         assertTrue(result);
         verify(mockPermissionCallback, never()).onPermissionResult();
@@ -57,7 +57,7 @@ public class AbstractSampleSDKActivityTest {
     public void checkAndRequestPermissions_PermissionsNotGranted_ReturnsFalse() {
         when(activity.hasPermissions(any(), anyList())).thenReturn(false);
 
-        boolean result = activity.checkAndRequestPermisssions(true, mockPermissionCallback);
+        boolean result = activity.checkAndRequestPermissions(true, mockPermissionCallback);
 
         assertFalse(result);
         verify(activity).showPermissionsErrorAndRequest(anyList());
@@ -66,7 +66,7 @@ public class AbstractSampleSDKActivityTest {
     @Test
     public void onRequestPermissionsResult_CallsPermissionCallback() {
         doReturn(false).when(activity).hasPermissions(any(), anyList());
-        activity.checkAndRequestPermisssions(true, mockPermissionCallback);
+        activity.checkAndRequestPermissions(true, mockPermissionCallback);
         activity.onRequestPermissionsResult(1, new String[]{}, new int[]{});
         verify(mockPermissionCallback).onPermissionResult();
     }
@@ -227,7 +227,7 @@ public class AbstractSampleSDKActivityTest {
 
     @Test
     public void onUnmutedFor() {
-        activity.onUnmutedFor("streamId");
+        activity.onUnMutedFor("streamId");
 
         verify(activity).makeToast(eq("Microphone is unmuted for streamId"), eq(Toast.LENGTH_LONG));
     }
@@ -248,7 +248,7 @@ public class AbstractSampleSDKActivityTest {
 
     @Test
     public void onSatatusUpdateFor() {
-        activity.onSatatusUpdateFor("streamId", true, false);
+        activity.onStatusUpdateFor("streamId", true, false);
 
         verify(activity).makeToast(eq("Status update for streamId mic: true camera: false"), eq(Toast.LENGTH_LONG));
     }
