@@ -3017,4 +3017,10 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
     public void setQueuedRemoteCandidates(@androidx.annotation.Nullable List<IceCandidate> queuedRemoteCandidates) {
         this.queuedRemoteCandidates = queuedRemoteCandidates;
     }
+
+    @Override
+    public void setCustomStunServer(String customStunServer) {
+        iceServers.clear();
+        iceServers.add(new PeerConnection.IceServer(customStunServer));
+    }
 }
