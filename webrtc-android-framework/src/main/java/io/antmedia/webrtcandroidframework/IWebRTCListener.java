@@ -16,6 +16,11 @@ public interface IWebRTCListener {
  void onDisconnected(String streamId);
 
  /**
+  * It's called when websocket connection has been connected
+  */
+ void onConnected();
+
+ /**
   * This method is fired when publishing(broadcasting) to the server has been finished
   */
  void onPublishFinished(String streamId);

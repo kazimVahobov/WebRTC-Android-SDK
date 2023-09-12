@@ -1626,7 +1626,9 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
         });
     }
 
+    @Override
     public void onConnected() {
+        webRTCListener.onConnected();
         Log.w(getClass().getSimpleName(), "onConnected");
     }
 
