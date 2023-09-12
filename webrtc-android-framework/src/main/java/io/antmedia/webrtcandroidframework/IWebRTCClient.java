@@ -171,4 +171,5 @@ public interface IWebRTCClient {
     void onCaptureFormatChange(int width, int height, int framerate);
     boolean onToggleMic();
 
+    void setCustomStunServer(String customStunServer);
 }
