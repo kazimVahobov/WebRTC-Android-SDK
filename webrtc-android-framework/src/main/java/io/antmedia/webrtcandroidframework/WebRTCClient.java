@@ -1940,7 +1940,7 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
             handler.post(() -> {
                 if(dataChannelObserver == null || dataChannel == null) return;
                 //Log.d(TAG, "Data channel state changed: " + dataChannel.label() + ": " + dataChannel.state());
-                //TODO: dataChannelObserver.onStateChange(dataChannel.state(), dataChannel.label());
+                dataChannelObserver.onStateChange(dataChannel.state(), dataChannel.label());
             });
         }
 
