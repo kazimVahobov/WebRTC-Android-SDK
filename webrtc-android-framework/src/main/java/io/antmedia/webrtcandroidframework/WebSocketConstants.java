@@ -420,4 +420,9 @@ public class WebSocketConstants {
      */
     public static final String MAIN_TRACK = "mainTrack";
 
+    /**
+     * Key in publish package for metaData param
+     */
+    public static final String META_DATA = "metaData";
+
 }

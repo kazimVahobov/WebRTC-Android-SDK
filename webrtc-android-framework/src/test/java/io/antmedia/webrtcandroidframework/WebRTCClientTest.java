@@ -112,7 +112,7 @@ public class WebRTCClientTest {
 
         webRTCClient.startStream();
 
-        verify(wsHandler, times(1)).startPublish(streamId, token, videoCallEnabled, audioCallEnabled, subscriberId, subscriberCode, streamName, null);
+        verify(wsHandler, times(1)).startPublish(streamId, token, videoCallEnabled, audioCallEnabled, subscriberId, subscriberCode, streamName, null, "");
 
         ArgumentCaptor<String> jsonCaptor = ArgumentCaptor.forClass(String.class);
         verify(wsHandler, times(1)).sendTextMessage(jsonCaptor.capture());
@@ -633,14 +633,14 @@ public class WebRTCClientTest {
         webRTCClient.play(playStreamId, "", null, "", "", "");
 
         String publishStreamId = "publishStreamId";
-        webRTCClient.publish(publishStreamId, "", true, true, "","", "", "");
+        webRTCClient.publish(publishStreamId, "", true, true, "","", "", "", "");
 
         webRTCClient.onDisconnected();
 
         verify(listener, timeout(1000)).onDisconnected(streamId);
 
         verify(webRTCClient, timeout(WebRTCClient.RECONNECTION_CONTROL_PERIOD_MLS).atLeast(2)).play(anyString(), anyString(), any(), anyString(), anyString(), anyString());
-        verify(webRTCClient, timeout(WebRTCClient.RECONNECTION_CONTROL_PERIOD_MLS).atLeast(2)).publish(anyString(), anyString(), anyBoolean(), anyBoolean(), anyString(), anyString(), anyString(), anyString());
+        verify(webRTCClient, timeout(WebRTCClient.RECONNECTION_CONTROL_PERIOD_MLS).atLeast(2)).publish(anyString(), anyString(), anyBoolean(), anyBoolean(), anyString(), anyString(), anyString(), anyString(), anyString());
     }
 
     @Test

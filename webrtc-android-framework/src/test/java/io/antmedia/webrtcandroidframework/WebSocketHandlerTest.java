@@ -136,8 +136,9 @@ public class WebSocketHandlerTest {
         String subscriberCode = "code123";
         String streamName = "testStream";
         String mainTrackId = "track123";
+        String streamMetaData = "track123metaData";
 
-        webSocketHandler.startPublish(streamId, token, videoEnabled, audioEnabled, subscriberId, subscriberCode, streamName, mainTrackId);
+        webSocketHandler.startPublish(streamId, token, videoEnabled, audioEnabled, subscriberId, subscriberCode, streamName, mainTrackId, streamMetaData);
 
         ArgumentCaptor<String> jsonCaptor = ArgumentCaptor.forClass(String.class);
         verify(webSocketHandler, times(1)).sendTextMessage(jsonCaptor.capture());

@@ -374,7 +374,8 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
                                         peerInfo.subscriberId,
                                         peerInfo.subscriberCode,
                                         peerInfo.streamName,
-                                        peerInfo.mainTrackId);
+                                        peerInfo.mainTrackId,
+                                        peerInfo.metaData);
                             } else if (peerInfo.mode.equals(MODE_PLAY)) {
                                 play(peerInfo.id,
                                         peerInfo.token,
@@ -1276,7 +1277,7 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
     private void startCall(String streamId) {
         Log.d(TAG, this.context.getString(R.string.connecting_to, url));
         if (streamMode.equals(IWebRTCClient.MODE_PUBLISH)) {
-            publish(streamId, token, videoCallEnabled, audioCallEnabled, subscriberId, subscriberCode, streamName, mainTrackId);
+            publish(streamId, token, videoCallEnabled, audioCallEnabled, subscriberId, subscriberCode, streamName, mainTrackId, "");
         }
         else if (streamMode.equals(IWebRTCClient.MODE_PLAY)) {
             play(streamId, token, null, subscriberId, subscriberCode, viewerInfo);
@@ -1291,7 +1292,7 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
         }
     }
 
-    public void publish(String streamId, String token, boolean videoCallEnabled, boolean audioCallEnabled, String subscriberId, String subscriberCode, String streamName, String mainTrackId) {
+    public void publish(String streamId, String token, boolean videoCallEnabled, boolean audioCallEnabled, String subscriberId, String subscriberCode, String streamName, String mainTrackId, String streamMetaData) {
         Log.e(TAG, "Publish: "+streamId);
 
         PeerInfo peerInfo = new PeerInfo(streamId, MODE_PUBLISH);
@@ -1302,10 +1303,11 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
         peerInfo.subscriberCode = subscriberCode;
         peerInfo.streamName = streamName;
         peerInfo.mainTrackId = mainTrackId;
+        peerInfo.metaData = streamMetaData;
         peers.put(streamId, peerInfo);
 
         init(this.url, streamId, this.streamMode, this.token, this.intent);
-        wsHandler.startPublish(streamId, token, videoCallEnabled, audioCallEnabled, subscriberId, subscriberCode, streamName, mainTrackId);
+        wsHandler.startPublish(streamId, token, videoCallEnabled, audioCallEnabled, subscriberId, subscriberCode, streamName, mainTrackId, streamMetaData);
     }
 
     public void play(String streamId, String token, String[] tracks) {

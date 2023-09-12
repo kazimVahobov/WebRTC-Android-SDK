@@ -253,7 +253,7 @@ public class TrackBasedConferenceActivity extends AbstractSampleSDKActivity {
 
     public void publishStream(String streamId) {
         if (!this.playOnlyMode) {
-            webRTCClient.publish(streamId, token, videoCallEnabled, audioCallEnabled, subscriberId, subscriberCode, streamName, roomId);
+            webRTCClient.publish(streamId, token, videoCallEnabled, audioCallEnabled, subscriberId, subscriberCode, streamName, roomId, "");
         }
         else {
             Log.i(getClass().getSimpleName(), "Play only mode. No publishing");
