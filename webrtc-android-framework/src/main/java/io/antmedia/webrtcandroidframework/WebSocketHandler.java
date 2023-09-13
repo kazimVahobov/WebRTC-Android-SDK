@@ -148,15 +148,11 @@ public class WebSocketHandler implements WebSocket.WebSocketConnectionObserver {
                 signallingListener.onRemoteIceCandidate(streamId, candidate);
             }
             else if (commandText.equals(WebSocketConstants.ROOM_INFORMATION_NOTIFICATION)) {
-                String[] streams = null;
-                if (json.has(WebSocketConstants.STREAMS_IN_ROOM) && !json.isNull(WebSocketConstants.STREAMS_IN_ROOM)) {
-                    JSONArray streamsArray = json.getJSONArray(WebSocketConstants.STREAMS_IN_ROOM);
-                    streams = new String[streamsArray.length()];
-                    for (int i = 0; i < streamsArray.length(); i++) {
-                        streams[i] = streamsArray.getString(i);
-                    }
+                JSONArray streamsArray = new JSONArray();
+                if (json.has(WebSocketConstants.STREAM_LIST_IN_ROOM) && !json.isNull(WebSocketConstants.STREAM_LIST_IN_ROOM)) {
+                    streamsArray = json.getJSONArray(WebSocketConstants.STREAM_LIST_IN_ROOM);
                 }
-                signallingListener.onRoomInformation(streams);
+                signallingListener.onRoomInformation(streamsArray);
             }
             else if (commandText.equals(WebSocketConstants.STREAM_INFORMATION_NOTIFICATION)) {
                 JSONArray jsonArray = json.getJSONArray(WebSocketConstants.STREAM_INFO);
@@ -198,15 +194,11 @@ public class WebSocketHandler implements WebSocket.WebSocketConnectionObserver {
                     signallingListener.onPublishStarted(streamId);
                 }
                 else if (definition.equals(WebSocketConstants.JOINED_THE_ROOM)) {
-                    String[] streams = null;
-                    if(json.has(WebSocketConstants.STREAMS_IN_ROOM) && !json.isNull(WebSocketConstants.STREAMS_IN_ROOM)) {
-                        JSONArray streamsArray = json.getJSONArray(WebSocketConstants.STREAMS_IN_ROOM);
-                        streams = new String[streamsArray.length()];
-                        for (int i = 0; i < streamsArray.length(); i++) {
-                            streams[i] = streamsArray.getString(i);
-                        }
+                    JSONArray streamsArray = new JSONArray();
+                    if (json.has(WebSocketConstants.STREAM_LIST_IN_ROOM) && !json.isNull(WebSocketConstants.STREAM_LIST_IN_ROOM)) {
+                        streamsArray = json.getJSONArray(WebSocketConstants.STREAM_LIST_IN_ROOM);
                     }
-                    signallingListener.onJoinedTheRoom(streamId, streams);
+                    signallingListener.onJoinedTheRoom(streamId, streamsArray);
                 }
                 else if (definition.equals(WebSocketConstants.LEAVED_THE_ROOM)) {
                     String roomId = null;

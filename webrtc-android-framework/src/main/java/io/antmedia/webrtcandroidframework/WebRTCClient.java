@@ -27,6 +27,7 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 
+import org.json.JSONArray;
 import org.webrtc.AddIceObserver;
 import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
@@ -1739,12 +1740,12 @@ public class WebRTCClient implements IWebRTCClient, AntMediaSignallingEvents, ID
     }
 
     @Override
-    public void onJoinedTheRoom(String streamId, String[] streams) {
+    public void onJoinedTheRoom(String streamId, JSONArray streams) {
         webRTCListener.onJoinedTheRoom(streamId, streams);
     }
 
     @Override
-    public void onRoomInformation(String[] streams) {
+    public void onRoomInformation(JSONArray streams) {
         webRTCListener.onRoomInformation(streams);
     }
 

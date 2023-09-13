@@ -1,5 +1,8 @@
 package io.antmedia.webrtc_android_sample_app;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,6 +20,7 @@ import java.nio.ByteBuffer;
 
 import de.tavendo.autobahn.WebSocket;
 import io.antmedia.webrtcandroidframework.PermissionCallback;
+import io.antmedia.webrtcandroidframework.WebSocketConstants;
 
 public class AbstractSampleSDKActivityTest {
 
@@ -202,15 +206,29 @@ public class AbstractSampleSDKActivityTest {
     }
 
     @Test
-    public void onJoinedTheRoom() {
-        activity.onJoinedTheRoom("streamId", new String[]{"stream1", "stream2"});
+    public void onJoinedTheRoom() throws JSONException {
+        JSONArray streamList = new JSONArray();
+        JSONObject jsonObject1 = new JSONObject();
+        jsonObject1.put(WebSocketConstants.STREAM_ID, "stream1");
+        streamList.put(jsonObject1);
+        JSONObject jsonObject2 = new JSONObject();
+        jsonObject2.put(WebSocketConstants.STREAM_ID, "stream2");
+        streamList.put(jsonObject2);
+        activity.onJoinedTheRoom("streamId", streamList);
 
         verify(activity).makeToast(eq("Joined the room for streamId"), eq(Toast.LENGTH_LONG));
     }
 
     @Test
-    public void onRoomInformation_CallsLog() {
-        activity.onRoomInformation(new String[]{"stream1", "stream2"});
+    public void onRoomInformation_CallsLog() throws JSONException {
+        JSONArray streamList = new JSONArray();
+        JSONObject jsonObject1 = new JSONObject();
+        jsonObject1.put(WebSocketConstants.STREAM_ID, "stream1");
+        streamList.put(jsonObject1);
+        JSONObject jsonObject2 = new JSONObject();
+        jsonObject2.put(WebSocketConstants.STREAM_ID, "stream2");
+        streamList.put(jsonObject2);
+        activity.onRoomInformation(streamList);
     }
 
     @Test

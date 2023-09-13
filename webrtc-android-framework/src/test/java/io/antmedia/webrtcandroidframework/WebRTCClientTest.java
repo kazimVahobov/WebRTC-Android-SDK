@@ -666,7 +666,8 @@ public class WebRTCClientTest {
         webRTCClient.getRoomInfo(room, streamId);
         verify(wsHandler, timeout(1000)).getRoomInfo(room, streamId);
 
-        String[] streams = new String[1];
+        JSONArray streams = new JSONArray();
+        String[] tracks =  new String[1];
 
         webRTCClient.onJoinedTheRoom(streamId, streams);
         verify(listener, timeout(1000)).onJoinedTheRoom(streamId, streams);
@@ -689,9 +690,9 @@ public class WebRTCClientTest {
         verify(webRTCClient, timeout(1000)).addRemoteIceCandidate(streamId, mockCandidate);
 
         doNothing().when(webRTCClient).sendPlayOtherTracks(any());
-        webRTCClient.onTrackList(streams);
-        verify(listener, timeout(1000)).onTrackList(streams);
-        verify(webRTCClient, timeout(1000)).sendPlayOtherTracks(streams);
+        webRTCClient.onTrackList(tracks);
+        verify(listener, timeout(1000)).onTrackList(tracks);
+        verify(webRTCClient, timeout(1000)).sendPlayOtherTracks(tracks);
 
         ArrayList<StreamInfo> streamInfoList = new ArrayList<>();
         webRTCClient.onStreamInfoList(streamId, streamInfoList);

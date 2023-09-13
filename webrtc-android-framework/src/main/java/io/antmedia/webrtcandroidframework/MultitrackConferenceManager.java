@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.webrtc.DataChannel;
@@ -277,7 +278,7 @@ public class MultitrackConferenceManager implements AntMediaSignallingEvents, ID
     }
 
     @Override
-    public void onJoinedTheRoom(String streamId, String[] streams) {
+    public void onJoinedTheRoom(String streamId, JSONArray streams) {
         Log.w(this.getClass().getSimpleName(), "On Joined the Room ");
 
         if(!publishWebRTCClient.isReconnectionInProgress() && !playOnlyMode) {
@@ -291,9 +292,18 @@ public class MultitrackConferenceManager implements AntMediaSignallingEvents, ID
         joined = true;
         // start periodic polling of room info
         scheduleGetRoomInfo();
-        if(streams.length > 0) {
-            //on track list triggers start playing
-            onTrackList(streams);
+        try {
+            if(streams.length() > 0) {
+                //on track list triggers start playing
+                String[] streamIds = new String[streams.length()];
+                for (int i = 0; i < streams.length(); i++) {
+                    JSONObject jsonObject = streams.getJSONObject(i);
+                    streamIds[i] = jsonObject.getString(WebSocketConstants.STREAM_ID);
+                }
+                onTrackList(streamIds);
+            }
+        } catch (Exception e) {
+
         }
     }
 
@@ -305,7 +315,7 @@ public class MultitrackConferenceManager implements AntMediaSignallingEvents, ID
     }
 
     @Override
-    public void onRoomInformation(String[] streams) {
+    public void onRoomInformation(JSONArray streams) {
         if (playWebRTCClient != null && !playWebRTCClient.isStreamStarted()) {
             playWebRTCClient.startStream();
         }

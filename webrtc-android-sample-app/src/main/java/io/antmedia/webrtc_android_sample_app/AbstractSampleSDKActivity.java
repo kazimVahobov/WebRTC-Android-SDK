@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.test.espresso.IdlingResource;
 import androidx.test.espresso.idling.CountingIdlingResource;
 
+import org.json.JSONArray;
 import org.webrtc.DataChannel;
 import org.webrtc.VideoTrack;
 
@@ -231,7 +232,7 @@ public abstract class AbstractSampleSDKActivity extends Activity implements IWeb
     }
 
     @Override
-    public void onJoinedTheRoom(String streamId, String[] streams) {
+    public void onJoinedTheRoom(String streamId, JSONArray streams) {
         String messageText = "Joined the room for " + streamId;
         Log.d(AbstractSampleSDKActivity.class.getName(), messageText);
         makeToast(messageText, Toast.LENGTH_LONG);
@@ -239,7 +240,7 @@ public abstract class AbstractSampleSDKActivity extends Activity implements IWeb
 
 
     @Override
-    public void onRoomInformation(String[] streams) {
+    public void onRoomInformation(JSONArray streams) {
         String messageText = "Room information received";
         Log.d(AbstractSampleSDKActivity.class.getName(), messageText);
         //Toast.makeText(this, messageText, Toast.LENGTH_LONG).show();

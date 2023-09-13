@@ -1,5 +1,6 @@
 package io.antmedia.webrtcandroidframework;
 
+import org.json.JSONArray;
 import org.webrtc.VideoTrack;
 
 import java.util.ArrayList;
@@ -111,14 +112,14 @@ public interface IWebRTCListener {
      * @param streamId
      * @param streams in the room
      */
-    void onJoinedTheRoom(String streamId, String[] streams);
+    void onJoinedTheRoom(String streamId, JSONArray streams);
 
     /**
      * It's called when room information is received
      *
      * @param streams
      */
-    void onRoomInformation(String[] streams);
+    void onRoomInformation(JSONArray streams);
 
     /**
      * It's called when left the room

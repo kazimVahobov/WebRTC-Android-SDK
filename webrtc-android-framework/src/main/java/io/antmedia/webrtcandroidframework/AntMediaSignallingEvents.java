@@ -1,6 +1,7 @@
 package io.antmedia.webrtcandroidframework;
 
 
+import org.json.JSONArray;
 import org.webrtc.IceCandidate;
 import org.webrtc.SessionDescription;
 
@@ -66,14 +67,14 @@ public interface AntMediaSignallingEvents {
      * @param streamId
      * @param streams
      */
-    void onJoinedTheRoom(String streamId, String[] streams);
+    void onJoinedTheRoom(String streamId, JSONArray streams);
 
     /**
      * It's called when room information is received
      *
      * @param streams
      */
-    void onRoomInformation(String[] streams);
+    void onRoomInformation(JSONArray streams);
 
     /**
      * It's called when websocket connection is disconnected

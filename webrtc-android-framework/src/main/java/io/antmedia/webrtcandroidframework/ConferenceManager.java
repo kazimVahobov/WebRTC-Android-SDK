@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.webrtc.DataChannel;
@@ -238,64 +239,85 @@ public class ConferenceManager implements AntMediaSignallingEvents, IDataChannel
     }
 
     @Override
-    public void onJoinedTheRoom(String streamId, String[] streams) {
+    public void onJoinedTheRoom(String streamId, JSONArray streams) {
         Log.w(this.getClass().getSimpleName(), "On Joined the Room ");
         publishStream(streamId);
-
-        if (streams != null)
-        {
-            for (String id : streams) {
-                WebRTCClient player = createPeer(id, IWebRTCClient.MODE_PLAY);
-                peers.put(id, player);
-                player.startStream();
+        try {
+            if(streams.length() > 0) {
+                //on track list triggers start playing
+                String[] streamIds = new String[streams.length()];
+                for (int i = 0; i < streams.length(); i++) {
+                    JSONObject jsonObject = streams.getJSONObject(i);
+                    streamIds[i] = jsonObject.getString(WebSocketConstants.STREAM_ID);
+                }
+                for (String id : streamIds) {
+                    WebRTCClient player = createPeer(id, IWebRTCClient.MODE_PLAY);
+                    peers.put(id, player);
+                    player.startStream();
+                }
             }
-        }
+        } catch (Exception e) {
 
+        }
         joined = true;
         // start periodic polling of room info
         scheduleGetRoomInfo();
     }
 
     @Override
-    public void onRoomInformation(String[] streams) {
-        Set<String> streamSet = new HashSet<>();
-        Collections.addAll(streamSet, streams);
-        Set<String> oldStreams = new HashSet<>(peers.keySet());
-        // remove publisher stream id
-        oldStreams.remove(streamId);
+    public void onRoomInformation(JSONArray streams) {
+        try {
+            if(streams.length() > 0) {
+                //on track list triggers start playing
+                String[] streamIds = new String[streams.length()];
+                for (int i = 0; i < streams.length(); i++) {
+                    JSONObject jsonObject = streams.getJSONObject(i);
+                    streamIds[i] = jsonObject.getString(WebSocketConstants.STREAM_ID);
+                }
 
-        // find newly removed streams
-        ArrayList<String> streamsLeft = new ArrayList<>();
-        for (String oldStream : oldStreams) {
-            // old stream has left now
-            if (!streamSet.contains(oldStream)) {
-                streamsLeft.add(oldStream);
+                Set<String> streamSet = new HashSet<>();
+                Collections.addAll(streamSet, streamIds);
+                Set<String> oldStreams = new HashSet<>(peers.keySet());
+                // remove publisher stream id
+                oldStreams.remove(streamId);
+
+                // find newly removed streams
+                ArrayList<String> streamsLeft = new ArrayList<>();
+                for (String oldStream : oldStreams) {
+                    // old stream has left now
+                    if (!streamSet.contains(oldStream)) {
+                        streamsLeft.add(oldStream);
+                    }
+                }
+
+                // find newly added streams
+                ArrayList<String> streamsJoined = new ArrayList<>();
+                for (String stream : streamIds) {
+                    // a new stream joined now
+                    if (!oldStreams.contains(stream)) {
+                        streamsJoined.add(stream);
+                    }
+                }
+
+                // remove them
+                for (String leftStream : streamsLeft) {
+                    streamLeft(leftStream);
+                    Log.i("ConferenceManager", "left stream: " + leftStream);
+                }
+                // add them
+                for (String joinedStream : streamsJoined) {
+                    streamJoined(joinedStream);
+                    Log.i("ConferenceManager", "joined stream: " + joinedStream);
+                }
+
+                WebRTCClient publisherClient = peers.get(streamId);
+                if (publisherClient != null && !publisherClient.isStreaming()) {
+                    publishStream(streamId);
+                }
+
             }
-        }
+        } catch (Exception e) {
 
-        // find newly added streams
-        ArrayList<String> streamsJoined = new ArrayList<>();
-        for (String stream : streams) {
-            // a new stream joined now
-            if (!oldStreams.contains(stream)) {
-                streamsJoined.add(stream);
-            }
-        }
-
-        // remove them
-        for (String leftStream : streamsLeft) {
-            streamLeft(leftStream);
-            Log.i("ConferenceManager", "left stream: " + leftStream);
-        }
-        // add them
-        for (String joinedStream : streamsJoined) {
-            streamJoined(joinedStream);
-            Log.i("ConferenceManager", "joined stream: " + joinedStream);
-        }
-
-        WebRTCClient publisherClient = peers.get(streamId);
-        if (publisherClient != null && !publisherClient.isStreaming()) {
-            publishStream(streamId);
         }
     }
 

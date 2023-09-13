@@ -19,6 +19,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.webrtc.DataChannel;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import io.antmedia.webrtcandroidframework.WebRTCClient;
+import io.antmedia.webrtcandroidframework.WebSocketConstants;
 import io.antmedia.webrtcandroidframework.apprtc.CallActivity;
 
 public class TrackBasedConferenceActivity extends AbstractSampleSDKActivity {
@@ -223,23 +225,33 @@ public class TrackBasedConferenceActivity extends AbstractSampleSDKActivity {
     }
 
     @Override
-    public void onJoinedTheRoom(String streamId, String[] streams) {
+    public void onJoinedTheRoom(String streamId, JSONArray streams) {
         Log.w(this.getClass().getSimpleName(), "On Joined the Room ");
+        try {
+            if(!webRTCClient.isReconnectionInProgress() && !playOnlyMode) {
+                publishStream(streamId);
+            }
+            if(streams.length() > 0) {
+                //on track list triggers start playing
+                String[] streamIds = new String[streams.length()];
+                for (int i = 0; i < streams.length(); i++) {
+                    JSONObject jsonObject = streams.getJSONObject(i);
+                    streamIds[i] = jsonObject.getString(WebSocketConstants.STREAM_ID);
+                }
 
-        if(!webRTCClient.isReconnectionInProgress() && !playOnlyMode) {
-            publishStream(streamId);
-        }
+                if(playOnlyMode) {
+                    startPlaying(streamIds);
+                }
+                joined = true;
+                // start periodic polling of room info
+                scheduleGetRoomInfo();
+                if(streamIds.length > 0) {
+                    //on track list triggers start playing
+                    onTrackList(streamIds);
+                }
+            }
+        } catch (Exception e) {
 
-        if(playOnlyMode) {
-            startPlaying(streams);
-        }
-
-        joined = true;
-        // start periodic polling of room info
-        scheduleGetRoomInfo();
-        if(streams.length > 0) {
-            //on track list triggers start playing
-            onTrackList(streams);
         }
     }
 
@@ -268,9 +280,21 @@ public class TrackBasedConferenceActivity extends AbstractSampleSDKActivity {
     }
 
     @Override
-    public void onRoomInformation(String[] streams) {
+    public void onRoomInformation(JSONArray streams) {
         if (webRTCClient != null) {
-            startPlaying(streams);
+            try {
+                if(streams.length() > 0) {
+                    //on track list triggers start playing
+                    String[] streamIds = new String[streams.length()];
+                    for (int i = 0; i < streams.length(); i++) {
+                        JSONObject jsonObject = streams.getJSONObject(i);
+                        streamIds[i] = jsonObject.getString(WebSocketConstants.STREAM_ID);
+                    }
+                    startPlaying(streamIds);
+                }
+            } catch (Exception e) {
+
+            }
         }
     }
 
